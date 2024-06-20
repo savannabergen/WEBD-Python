@@ -47,22 +47,6 @@ def simple_insert_info(conn, info):
     conn.commit()
     return cur.lastrowid
 
-# fetch all rows from tables in database
-def display_database(conn):
-    fetch_commands = [
-    """SELECT * FROM users """,
-    """SELECT * FROM posts """, 
-    """SELECT * FROM user_info """]
-    cur = conn.cursor()
-
-    for fetch_command in fetch_commands:
-        cur.execute(fetch_command)   
-        # Store all the data
-        results = cur.fetchall()
-        print("Table: ", results)
-    conn.commit()
-    return cur.lastrowid
-
 # main method to execute
 def main():
     try:
@@ -70,28 +54,46 @@ def main():
             cursor = conn.cursor()
             for sql_command in sql_commands:
                 cursor.execute(sql_command)
-        # add new user
-        print(db_name)
-        users = [('Savanna', 'ss@gmail'), ('John Doe', 'joe@yahoo.ca'), ('George Little', 'glittle@hotmail.com')]
+            # add new user
+            users = [('Savanna', 'ss@gmail'), ('John Doe', 'joe@yahoo.ca'), ('George Little', 'glittle@hotmail.com')]
+            for user in users:
+                user_id = simple_insert_users(conn, user)
 
-        for user in users:
-            user_id = simple_insert_users(conn, user)
+            # add a new post
+            posts = [('This is some content', '6-17-2024'), ('YES TEXT', '6-16-2024'), ('And Again', '6-15-2024')]
 
-        # add a new post
-        posts = [('This is some content', '6-17-2024'), ('YES TEXT', '6-16-2024'), ('And Again', '6-15-2024')]
+            for post in posts:
+                simple_insert_posts(conn, post)
 
-        for post in posts:
-            simple_insert_posts(conn, post)
+            # add a new comment
+            information = [(user_id, 'China'), (user_id, 'Russia'), (4, 'USA')]
 
+            for info in information:
+                simple_insert_info(conn, info)
 
-        # add a new comment
-        information = [(user_id, 'China'), (user_id, 'Russia'), (4, 'USA')]
+        # display users from database
+        sql = ("""SELECT * FROM users """)
+        cursor.execute(sql)   
+        # Store all the data
+        results = cursor.fetchall()
+        print("User's Table: ", results)
+        conn.commit()
 
-        for info in information:
-            simple_insert_info(conn, info)
+        # display posts from database
+        sql = ("""SELECT * FROM posts """)
+        cursor.execute(sql)   
+        # Store all the data
+        results = cursor.fetchall()
+        print("Post's Table: ", results)
+        conn.commit()
 
-        # display database
-        display_database(conn)
+        # display user_info from database
+        sql = ("""SELECT * FROM user_info """)
+        cursor.execute(sql)   
+        # Store all the data
+        results = cursor.fetchall()
+        print("User's Info Table: ", results)
+        conn.commit()
 
         # update database
         update_statement = 'UPDATE users SET full_name=?, email=? WHERE users_id =?'
@@ -99,13 +101,13 @@ def main():
         cursor.execute('''SELECT * FROM users WHERE full_name='Troy' ''')
         results = cursor.fetchall()
         conn.commit()
-        print("Updated:", results)
+        print("Updated (Replaced User 'Savanna' with an id of 1: ", results)
 
         # delete database
         cursor.execute('''DELETE FROM user_info WHERE users_id='4' ''')
         cursor.execute('''SELECT * FROM user_info ''')
         results = cursor.fetchall()
-        print("Deleted:", results)    
+        print("Deleted User's with a users_ID of 4:", results)    
 
     # catch error, close connection
     except sqlite3.Error as e:
