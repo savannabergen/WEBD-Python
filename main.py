@@ -1,9 +1,12 @@
+## Savanna Bergen/WEBD-3010  
 import sqlite3
 from faker import Faker
 
+# variable for database name
 fake = Faker()
 db_name = fake.color_name() + ".db"
 
+# array of commands to create tables
 sql_commands = ["""CREATE TABLE users (                
     users_id INTEGER PRIMARY KEY,
     full_name VARCHAR(30),
@@ -67,6 +70,7 @@ def main():
             cursor = conn.cursor()
             for sql_command in sql_commands:
                 cursor.execute(sql_command)
+        # add new user
         print(db_name)
         users = [('Savanna', 'ss@gmail'), ('John Doe', 'joe@yahoo.ca'), ('George Little', 'glittle@hotmail.com')]
 
@@ -92,13 +96,13 @@ def main():
         # update database
         update_statement = 'UPDATE users SET full_name=?, email=? WHERE users_id =?'
         cursor.execute(update_statement, ("Troy", "LULZGUY!", 1))
-        cursor.execute('''SELECT * FROM users ''')
+        cursor.execute('''SELECT * FROM users WHERE full_name='Troy' ''')
         results = cursor.fetchall()
         conn.commit()
         print("Updated:", results)
 
         # delete database
-        cursor.execute('''DELETE FROM user_info WHERE users_id='3' ''')
+        cursor.execute('''DELETE FROM user_info WHERE users_id='4' ''')
         cursor.execute('''SELECT * FROM user_info ''')
         results = cursor.fetchall()
         print("Deleted:", results)    

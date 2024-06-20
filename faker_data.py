@@ -78,10 +78,10 @@ def main():
             for sql_command in sql_commands:
                 cursor.execute(sql_command)
             # Select Number to Insert Users
-            number = 100
+            number = 10
             insert_users(connection, number) 
             # Select Number to Insert Posts
-            number = 100
+            number = 19
             insert_posts(connection, number)
             # Fetch Database
             database = "Pink.db"
